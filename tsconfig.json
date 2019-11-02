@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outDir": "./out_js",
+        "target": "es6",
+        "strict": true
+    },
+    "include": [
+        "./src_ts/*"
+    ]
+}

@@ -1,0 +1,43 @@
+body {
+    margin: 4px;
+    font-size: 16px;
+    line-height: 20px;
+    color: #333;
+    background-color: #fff;
+}
+
+[class*="-highlight"] {
+    margin: 5px;
+    padding: 1px 4px;
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    white-space: nowrap;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset;
+    -moz-box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset;
+    box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset;
+}
+
+.radical-highlight {
+    background-color: #00a1f1;
+    /* background-image: -moz-linear-gradient(top, #0af, #0093dd);
+    background-image: -o-linear-gradient(top, #0af, #0093dd); */
+}
+
+.kanji-highlight {
+    background-color: #f100a1;
+    /*background-image: -moz-linear-gradient(top, #f0a, #dd0093);
+    background-image: -o-linear-gradient(top, #f0a, #dd0093); */
+}
+
+.vocabulary-highlight {
+    background-color: #a100f1;
+    /*background-image: -moz-linear-gradient(top, #a0f, #9300dd);
+    background-image: -o-linear-gradient(top, #a0f, #9300dd); */
+}
+
+.burned-highlight {
+    background-color: #474747;
+}

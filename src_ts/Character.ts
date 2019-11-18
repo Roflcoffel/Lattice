@@ -8,9 +8,9 @@ class Character {
     Reading: string | null;      //The reading is a kanji, hiragana, or can be null.
     Burned: boolean;             //Has the character been burned.
     Type:  ReadType;             //What kind of character is it: Radical, Kanji, Vocab or null.
-    Image: Array<Object> | null; //An image for radicals that do not have a utf-8 representation.
+    Image: Array<ImageUrl>       //An image for radicals that do not have a utf-8 representation.
 
-    constructor(Level: number, Reading: string, Burned: boolean, Type: ReadType, Image: Array<Object>) {
+    constructor(Level: number, Reading: string, Burned: boolean, Type: ReadType, Image: Array<ImageUrl>) {
        this.Level = Level;
        this.Reading = Reading;
        this.Burned = Burned;

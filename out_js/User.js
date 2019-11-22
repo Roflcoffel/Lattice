@@ -1,7 +1,8 @@
 "use strict";
 class User {
-    constructor(Level, Username) {
-        this.Level = Level;
-        this.Username = Username;
+    constructor(level, username, updated_at) {
+        this.level = level;
+        this.username = username;
+        this.updated_at = updated_at;
     }
 }

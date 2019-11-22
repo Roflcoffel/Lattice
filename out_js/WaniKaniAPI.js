@@ -14,8 +14,8 @@ class WaniKaniAPI {
         this.URL = "https://api.wanikani.com/v2/";
         this.Revision = "20170710";
     }
-    Request(path, filters) {
-        return new Request(this.URL + path + "?" + filters, {
+    Request(url, filters) {
+        return new Request(url + "?" + filters, {
             method: 'GET',
             headers: new Headers({
                 'Wanikani-Revision': this.Revision,
@@ -29,39 +29,37 @@ class WaniKaniAPI {
             return yield response.json();
         });
     }
-    GetAllSubjects(new_url = "subjects", filter = "") {
+    GetAllSubjectHeaders(filter = "levels=1", new_url = this.URL + "subjects") {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch(this.Request(new_url, filter));
-            return yield response.json();
-        });
-    }
-    GetUser() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(this.Request("user", ""));
-            return yield response.json();
-        });
-    }
-    MapCharacter(jsonData) {
-        let data = new Array();
-        let imgData = new Array();
-        let level = new Array();
-        data = jsonData;
-        data.forEach(cha => {
-            let images = new Array();
-            if (cha.data.character_images != null) {
-                imgData = cha.data.character_images;
-                imgData.forEach(prop => {
-                    images.push(new ImageUrl(prop.content_type, prop.metadata, prop.url));
-                });
+            const result = yield response.json();
+            const pages = result.pages;
+            const data = result.data;
+            console.log("Next Url: " + pages.next_url);
+            if (pages.next_url != null) {
+                return data.concat(yield this.GetAllSubjectHeaders("", pages.next_url));
             }
-            level.push(new Character(cha.data.level, cha.data.characters, false, cha.object, //contains the type
-            images));
+            else {
+                return data;
+            }
         });
-        //console.log(data);
-        console.log(level);
-        return level;
     }
-    MapUser(jsonData) {
-        return new User(jsonData.level, jsonData.username);
+    GetAllSubjects(filter = "levels=1") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const headers = yield this.GetAllSubjectHeaders(filter);
+            return headers.map(header => header.data);
+        });
+    }
+    GetAllCharacters(filter = "levels=1") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const headers = yield this.GetAllSubjectHeaders(filter);
+            return headers.map(header => new Character(header.data.level, header.data.characters, false, header.object));
+        });
+    }
+    GetUser(filter = "") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(this.Request(this.URL + "user", filter));
+            return yield response.json().then(response => new User(response.data.level, response.data.username, new Date(response.data_updated_at)));
+        });
     }
 }

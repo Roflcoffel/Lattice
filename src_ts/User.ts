@@ -1,9 +1,11 @@
 class User {
-    Level : string;
-    Username : string;
+    level : string;
+    username : string;
+    updated_at : Date;
 
-    constructor(Level : string, Username: string) {
-        this.Level = Level;
-        this.Username = Username;
+    constructor(level : string, username: string, updated_at : Date) {
+        this.level = level;
+        this.username = username;
+        this.updated_at = updated_at;
     }
 }

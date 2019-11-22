@@ -1,17 +1,16 @@
 "use strict";
-var ReadType;
-(function (ReadType) {
-    ReadType["NULL"] = "null";
-    ReadType["RADICAL"] = "radical";
-    ReadType["KANJI"] = "kanji";
-    ReadType["VOCABULARY"] = "vocabulary";
-})(ReadType || (ReadType = {}));
+var charType;
+(function (charType) {
+    charType["NULL"] = "null";
+    charType["RADICAL"] = "radical";
+    charType["KANJI"] = "kanji";
+    charType["VOCABULARY"] = "vocabulary";
+})(charType || (charType = {}));
 class Character {
-    constructor(Level, Reading, Burned, Type, Image) {
-        this.Level = Level;
-        this.Reading = Reading;
-        this.Burned = Burned;
-        this.Type = Type;
-        this.Image = Image;
+    constructor(level, character, burned, type) {
+        this.level = level;
+        this.character = character;
+        this.burned = burned;
+        this.type = type;
     }
 }

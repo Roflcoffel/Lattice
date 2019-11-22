@@ -10,8 +10,8 @@ class WaniKaniAPI {
         this.Revision = "20170710";
     }
 
-    Request(path: string, filters: string) : Request {
-        return new Request(this.URL + path + "?" + filters, {
+    private Request(url: string, filters: string) : Request {
+        return new Request(url + "?" + filters, {
             method: 'GET',
             headers: new Headers({
                 'Wanikani-Revision': this.Revision,
@@ -25,54 +25,35 @@ class WaniKaniAPI {
         return await response.json();
     }
 
-    async GetAllSubjects(new_url: string = "subjects", filter: string = "") : Promise<any> {
+    private async GetAllSubjectHeaders(filter: string = "levels=1", new_url: string = this.URL + "subjects") : Promise<Header[]> {
         const response = await fetch(this.Request(new_url, filter));
-        return await response.json();
+        const result = await response.json();
+
+        const pages : Page = result.pages;
+        const data : Array<Header> = result.data;
+
+        console.log("Next Url: " + pages.next_url);
+
+        if(pages.next_url != null) {
+            return data.concat(await this.GetAllSubjectHeaders("", pages.next_url))
+        }
+        else {
+            return data;
+        }
     }
 
-    async GetUser() : Promise<any> {
-        const response = await fetch(this.Request("user", ""));
-        return await response.json();
+    async GetAllSubjects(filter: string = "levels=1") : Promise<Subject[]> {
+        const headers : Array<Header> = await this.GetAllSubjectHeaders(filter);
+        return headers.map(header => header.data);
     }
 
-    MapCharacter(jsonData : any) : Array<Character> {
-        let data = new Array<any>();
-        let imgData = new Array<any>();
-
-        let level = new Array<Character>();
-
-        data = jsonData;
-
-        data.forEach(cha => {
-            let images = new Array<ImageUrl>();
-
-            if(cha.data.character_images != null) {
-                imgData = cha.data.character_images
-                imgData.forEach(prop => {
-                    images.push(new ImageUrl(
-                        prop.content_type,
-                        prop.metadata,
-                        prop.url
-                    ));
-                });
-            }
-
-            level.push(new Character(
-                cha.data.level, 
-                cha.data.characters, 
-                false, 
-                cha.object, //contains the type
-                images
-            ));
-        });
-        
-        //console.log(data);
-        console.log(level);
-
-        return level;
+    async GetAllCharacters(filter: string = "levels=1") : Promise<Character[]> {
+        const headers : Array<Header> = await this.GetAllSubjectHeaders(filter);
+        return headers.map(header => new Character(header.data.level, header.data.characters, false, header.object));
     }
 
-    MapUser(jsonData : any) : User {
-        return new User(jsonData.level, jsonData.username )
+    async GetUser(filter: string = "") : Promise<User> {
+        const response = await fetch(this.Request(this.URL + "user", filter));
+        return await response.json().then(response => new User(response.data.level, response.data.username, new Date(response.data_updated_at)));
     }
 }

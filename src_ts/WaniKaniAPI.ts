@@ -49,7 +49,10 @@ class WaniKaniAPI {
 
     async GetAllCharacters(filter: string = "levels=1") : Promise<Character[]> {
         const headers : Array<Header> = await this.GetAllSubjectHeaders(filter);
-        return headers.map(header => new Character(header.data.level, header.data.characters, false, header.object));
+        return headers.map(header => {
+            let imgUrl : string = "https://cdn.wanikani.com/subjects/images/" + header.id + "-" + header.data.slug.replace(/\-[0-9]+/g, "") + "-large.png"
+            return new Character(header.data.level, header.data.characters, false, header.object, imgUrl)  
+        });
     }
 
     async GetUser(filter: string = "") : Promise<User> {

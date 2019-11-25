@@ -53,7 +53,10 @@ class WaniKaniAPI {
     GetAllCharacters(filter = "levels=1") {
         return __awaiter(this, void 0, void 0, function* () {
             const headers = yield this.GetAllSubjectHeaders(filter);
-            return headers.map(header => new Character(header.data.level, header.data.characters, false, header.object));
+            return headers.map(header => {
+                let imgUrl = "https://cdn.wanikani.com/subjects/images/" + header.id + "-" + header.data.slug.replace(/\-[0-9]+/g, "") + "-large.png";
+                return new Character(header.data.level, header.data.characters, false, header.object, imgUrl);
+            });
         });
     }
     GetUser(filter = "") {

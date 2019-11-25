@@ -28,25 +28,20 @@ $(document).ready(function () {
     let user;
     let levels = new Array();
     let filter = new Array();
-    let current_date;
     (() => __awaiter(this, void 0, void 0, function* () {
         //StorageHandler.ClearAll();
-        current_date = new Date();
-        user = StorageHandler.Retrieve("user");
+        user = StorageHandler.Retrieve("user", "session");
         levels = StorageHandler.Retrieve("characters");
-        if (StorageHandler.isEmpty("user")) {
+        if (StorageHandler.isEmpty("user", "session")) {
             user = yield WK.GetUser();
-            StorageHandler.Store("user", user);
+            StorageHandler.Store("user", user, "session");
         }
         if (StorageHandler.isEmpty("characters")) {
             filter = [...Array(user.level + 1).keys()].slice(1);
             levels = yield WK.GetAllCharacters("levels=" + filter);
             StorageHandler.Store("characters", levels);
         }
-        console.log(new Date(user.updated_at));
-        console.log(current_date);
-        console.log(user.updated_at < current_date);
-        console.log(user.updated_at > current_date);
+        console.log(levels);
         //Draw Lattice
         DrawHeader(user, levels.length);
         DrawLattice(levels);
@@ -65,9 +60,8 @@ function DrawLattice(characters) {
         switch (char.type) {
             case charType.RADICAL:
                 if (char.character == null) {
-                    console.log("character value is null, use image");
-                    //htmlChar = "<img src='" + char.Image[8].Url + "' class='radical-img-highlight'>";
-                    //break;
+                    htmlChar = "<img src='" + char.img + "' class='radical-img-highlight'>";
+                    break;
                 }
                 htmlChar = "<h4 class='radical-highlight'>" + char.character + "</h4>";
                 break;

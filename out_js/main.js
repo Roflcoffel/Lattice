@@ -28,10 +28,12 @@ $(document).ready(function () {
     let user;
     let levels = new Array();
     let filter = new Array();
+    let backup_levels;
     (() => __awaiter(this, void 0, void 0, function* () {
         //StorageHandler.ClearAll();
         user = StorageHandler.Retrieve("user", "session");
         levels = StorageHandler.Retrieve("characters");
+        backup_levels = StorageHandler.Retrieve("backup_chars");
         if (StorageHandler.isEmpty("user", "session")) {
             user = yield WK.GetUser();
             StorageHandler.Store("user", user, "session");
@@ -41,11 +43,27 @@ $(document).ready(function () {
             levels = yield WK.GetAllCharacters("levels=" + filter);
             StorageHandler.Store("characters", levels);
         }
-        console.log(levels);
+        if (StorageHandler.isEmpty("backup_chars")) {
+            backup_levels = {
+                "radical": levels.filter(char => char.type == charType.RADICAL),
+                "kanji": levels.filter(char => char.type == charType.KANJI),
+                "vocabulary": levels.filter(char => char.type == charType.VOCABULARY)
+            };
+            StorageHandler.Store("backup_chars", backup_levels);
+        }
+        //See if there are any radicals from the latest level,
+        //if we do not find any, this means we need to do a new GetAllCharacters call.
+        console.log((backup_levels["radical"].find(char => char.level.toString() == user.level) != undefined));
         //Draw Lattice
         DrawHeader(user, levels.length);
         DrawLattice(levels);
     }))();
+    $('input[type=checkbox]').change(function () {
+        let type = $(this).parent().text().trim().toLocaleLowerCase();
+        levels = $(this).is(':checked') ? levels.concat(backup_levels[type.toString()]) : levels.filter(char => char.type != type);
+        ClearLattice();
+        DrawLattice(levels);
+    });
 });
 function DrawHeader(user, count) {
     $(".lattice-header")
@@ -54,7 +72,7 @@ function DrawHeader(user, count) {
         .append("<p>A total of <b>" + count + "</b> characters learned</p>");
 }
 function DrawLattice(characters) {
-    $(".container").append("<div class='row character'></div>");
+    $(".main").append("<div class='row character'></div>");
     characters.forEach(char => {
         let htmlChar;
         switch (char.type) {
@@ -78,5 +96,8 @@ function DrawLattice(characters) {
         }
         $(".character").append(htmlChar);
     });
+}
+function ClearLattice() {
+    $(".character").remove();
 }
 //badge badge-primary, Blp

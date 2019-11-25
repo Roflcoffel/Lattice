@@ -1,7 +1,7 @@
 
 class StorageHandler {
     static Store(key : string, object : any, local_or_session : string = "local") : void {
-        console.log("Storing in storage");
+        console.log("Storing key: " + key);
         try {
             if(local_or_session == "local") {
                 localStorage.setItem(key, JSON.stringify(object));
@@ -14,7 +14,7 @@ class StorageHandler {
     }
 
     static Retrieve(key : string, local_or_session : string = "local") : any {
-        console.log("Retrieving object");
+        console.log("Retrieving key: " + key);
         let json : string | null;
         json = local_or_session == "local" ? localStorage.getItem(key) : sessionStorage.getItem(key);
         if(json != null)

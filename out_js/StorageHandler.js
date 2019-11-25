@@ -1,7 +1,7 @@
 "use strict";
 class StorageHandler {
     static Store(key, object, local_or_session = "local") {
-        console.log("Storing in storage");
+        console.log("Storing key: " + key);
         try {
             if (local_or_session == "local") {
                 localStorage.setItem(key, JSON.stringify(object));
@@ -14,7 +14,7 @@ class StorageHandler {
         }
     }
     static Retrieve(key, local_or_session = "local") {
-        console.log("Retrieving object");
+        console.log("Retrieving key: " + key);
         let json;
         json = local_or_session == "local" ? localStorage.getItem(key) : sessionStorage.getItem(key);
         if (json != null)

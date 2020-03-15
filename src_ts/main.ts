@@ -16,6 +16,8 @@
 
 //update_after filter?
 
+const API_KEY = "0000"
+
 interface Table {
     [key: string] : Array<Character>;
 }
